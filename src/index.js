@@ -146,26 +146,27 @@ const setSVGpath = () => {
           if (err) {
             console.log(err);
           } else {
-            const currentConfig = JSON.parse(
-              JSON.stringify(eval("(" + data.match(/{([^}]*)}/)[0] + ")"))
+            configs.svgFilepath = answers.svgPath;
+            console.log(configs);
+
+            const replaced = data.replace(
+              new RegExp("{([^}]*)}"),
+              JSON.stringify(configs)
             );
-            console.log(currentConfig);
+            const prettified = prettier.format(replaced, prettierConfig);
 
-            // const replaced = data.replace(new RegExp("{([^}]*)}"), defaultsLiteral);
-            // const prettified = prettier.format(replaced, prettierConfig);
-
-            // fs.writeFile(
-            //   path.join(__dirname, "configs", "configs.js"),
-            //   prettified,
-            //   "utf-8",
-            //   (err) => {
-            //     if (err) {
-            //       console.log(err);
-            //     } else {
-            //       console.log("Configs reset to defaults.");
-            //     }
-            //   }
-            // );
+            fs.writeFile(
+              path.join(__dirname, "configs", "configs.js"),
+              prettified,
+              "utf-8",
+              (err) => {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log("Configs reset to defaults.");
+                }
+              }
+            );
           }
         }
       );
